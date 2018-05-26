@@ -78,32 +78,29 @@ def update(w,y_vec,theta=0.5,time=100):
 
 #The following is training pipeline
 #Initial setting
-def hopfield(train_files, test_files,theta=0.5, time=1000, size=(100,100),threshold=60, current_path=None):
+def hopfield(train_files, test_files,theta=0.5, time=1000, size=(100,100),threshold=60, current_path=None,weight=False):
 
     #read image and convert it to Numpy array
     print "Importing images and creating weight matrix...."
 
     #num_files is the number of files
     num_files = 0
-    my_file = Path("/output/weight.txt")
-    if (my_file.is_file())
-        w = np.loadtxt(my_file)
-    else    
-		for path in train_files:
-			print path
-			x = readImg2array(file=path,size=size,threshold=threshold)
-			x_vec = mat2vec(x)
-			print len(x_vec)
-			if num_files == 0:
-				w = create_W(x_vec)
-				num_files = 1
-			else:
-				tmp_w = create_W(x_vec)
-				w = w + tmp_w
-				num_files +=1
-		with open(my_file, 'wb') as f:
-			for line in w:
-				np.savetxt(f, line, fmt='%.2f')
+    if (weight):
+        w = np.load('output/weight.npy')
+    else:
+	for path in train_files:
+		print path
+		x = readImg2array(file=path,size=size,threshold=threshold)
+		x_vec = mat2vec(x)
+		print len(x_vec)
+		if num_files == 0:
+			w = create_W(x_vec)
+			num_files = 1
+		else:
+			tmp_w = create_W(x_vec)
+			w = w + tmp_w
+			num_files +=1
+	np.save('output/weight.npy', w)
     print "Weight matrix is done!!"
 
 
@@ -146,4 +143,4 @@ for i in os.listdir(path):
         test_paths.append(path+i)
 
 #Hopfield network starts!
-hopfield(train_files=train_paths, test_files=test_paths, theta=0.5,time=5000,size=(100,100),threshold=60, current_path = current_path)
+hopfield(train_files=train_paths, test_files=test_paths, theta=0.5,time=5000,size=(100,100),threshold=60, current_path = current_path,weight=True)
