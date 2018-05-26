@@ -85,19 +85,25 @@ def hopfield(train_files, test_files,theta=0.5, time=1000, size=(100,100),thresh
 
     #num_files is the number of files
     num_files = 0
-    for path in train_files:
-        print path
-        x = readImg2array(file=path,size=size,threshold=threshold)
-        x_vec = mat2vec(x)
-        print len(x_vec)
-        if num_files == 0:
-            w = create_W(x_vec)
-            num_files = 1
-        else:
-            tmp_w = create_W(x_vec)
-            w = w + tmp_w
-            num_files +=1
-
+    my_file = Path("/output/weight.txt")
+    if (my_file.is_file())
+        w = np.loadtxt(my_file)
+    else    
+		for path in train_files:
+			print path
+			x = readImg2array(file=path,size=size,threshold=threshold)
+			x_vec = mat2vec(x)
+			print len(x_vec)
+			if num_files == 0:
+				w = create_W(x_vec)
+				num_files = 1
+			else:
+				tmp_w = create_W(x_vec)
+				w = w + tmp_w
+				num_files +=1
+		with open(my_file, 'wb') as f:
+			for line in w:
+				np.savetxt(f, line, fmt='%.2f')
     print "Weight matrix is done!!"
 
 
@@ -115,7 +121,7 @@ def hopfield(train_files, test_files,theta=0.5, time=1000, size=(100,100),thresh
         y_vec_after = update(w=w,y_vec=y_vec,theta=theta,time=time)
         y_vec_after = y_vec_after.reshape(oshape)
         if current_path is not None:
-            outfile = current_path+"/after_"+str(counter)+".jpeg"
+            outfile = current_path+"/output/after_"+str(counter)+".jpeg"
             array2img(y_vec_after,outFile=outfile)
         else:
             after_img = array2img(y_vec_after,outFile=None)
@@ -140,4 +146,4 @@ for i in os.listdir(path):
         test_paths.append(path+i)
 
 #Hopfield network starts!
-hopfield(train_files=train_paths, test_files=test_paths, theta=0.5,time=50000,size=(100,100),threshold=60, current_path = current_path)
+hopfield(train_files=train_paths, test_files=test_paths, theta=0.5,time=5000,size=(100,100),threshold=60, current_path = current_path)
