@@ -3,7 +3,7 @@
 
 import numpy as np
 import random
-import Image
+from PIL import Image
 import os
 import re
 
@@ -140,4 +140,4 @@ for i in os.listdir(path):
         test_paths.append(path+i)
 
 #Hopfield network starts!
-hopfield(train_files=train_paths, test_files=test_paths, theta=0.5,time=20000,size=(100,100),threshold=60, current_path = current_path)
+hopfield(train_files=train_paths, test_files=test_paths, theta=0.5,time=50000,size=(100,100),threshold=60, current_path = current_path)
