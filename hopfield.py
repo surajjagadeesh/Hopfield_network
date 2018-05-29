@@ -10,7 +10,7 @@ import re
 #convert matrix to a vector
 def mat2vec(x):
     m = x.shape[0]*x.shape[1]
-    tmp1 = np.zeros(m)
+    tmp1 = np.zeros((m,))
 
     c = 0
     for i in range(x.shape[0]):
@@ -85,6 +85,7 @@ def hopfield(train_files, test_files,theta=0.5, time=1000, size=(100,100),thresh
 
     #num_files is the number of files
     num_files = 0
+    x_mat = np.array([])
     if (weight):
         w = np.load('output/weight.npy')
     else:
@@ -92,14 +93,21 @@ def hopfield(train_files, test_files,theta=0.5, time=1000, size=(100,100),thresh
 		print path
 		x = readImg2array(file=path,size=size,threshold=threshold)
 		x_vec = mat2vec(x)
-		print len(x_vec)
-		if num_files == 0:
-			w = create_W(x_vec)
-			num_files = 1
+		if num_files ==0 :
+			x_mat = np.hstack((x_mat, x_vec))
 		else:
-			tmp_w = create_W(x_vec)
-			w = w + tmp_w
-			num_files +=1
+			x_mat = np.vstack((x_mat, x_vec))
+		num_files += 1
+		#if num_files == 0:
+		#	w = create_W(x_vec)
+		#	num_files = 1
+		#else:
+		#	tmp_w = create_W(x_vec)
+		#	w = w + tmp_w
+		#	num_files +=1
+		print np.size(x_vec)
+	eye = num_files * np.identity(np.size(x_mat, 1))
+	w = np.dot(x_mat.T, x_mat) - eye
 	np.save('output/weight.npy', w)
     print "Weight matrix is done!!"
 
@@ -110,7 +118,7 @@ def hopfield(train_files, test_files,theta=0.5, time=1000, size=(100,100),thresh
         y = readImg2array(file=path,size=size,threshold=threshold)
         oshape = y.shape
         y_img = array2img(y)
-        y_img.show()
+        #y_img.show()
         print "Imported test data"
 
         y_vec = mat2vec(y)
@@ -124,6 +132,7 @@ def hopfield(train_files, test_files,theta=0.5, time=1000, size=(100,100),thresh
             after_img = array2img(y_vec_after,outFile=None)
             after_img.show()
         counter +=1
+	print "All done!"
 
 
 #Main
@@ -143,4 +152,4 @@ for i in os.listdir(path):
         test_paths.append(path+i)
 
 #Hopfield network starts!
-hopfield(train_files=train_paths, test_files=test_paths, theta=0.5,time=5000,size=(100,100),threshold=60, current_path = current_path,weight=True)
+hopfield(train_files=train_paths, test_files=test_paths, theta=0.5,time=5000,size=(75,75),threshold=60, current_path = current_path,weight=False)
