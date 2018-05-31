@@ -152,4 +152,4 @@ for i in os.listdir(path):
         test_paths.append(path+i)
 
 #Hopfield network starts!
-hopfield(train_files=train_paths, test_files=test_paths, theta=0.5,time=5000,size=(75,75),threshold=60, current_path = current_path,weight=False)
+hopfield(train_files=train_paths, test_files=test_paths, theta=0.9,time=100,size=(5,7),threshold=60, current_path = current_path,weight=False)
