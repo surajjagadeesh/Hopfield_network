@@ -6,6 +6,7 @@ import random
 from PIL import Image
 import os
 import re
+import math
 
 #convert matrix to a vector
 def mat2vec(x):
@@ -62,6 +63,7 @@ def array2img(data, outFile = None):
 
 
 #Update
+"""
 def update(w,y_vec,theta=0.5,time=100):
     for s in range(time):
         m = len(y_vec)
@@ -73,12 +75,39 @@ def update(w,y_vec,theta=0.5,time=100):
         elif u < 0:
             y_vec[i] = -1
 
+
     return y_vec
+
+"""
+"""
+def update(w,y_vec,theta=0.5,time=100):
+    for s in range(time):
+        m = len(y_vec)
+        i = random.randint(0,m-1)
+        u = np.dot(w[i][:],y_vec)
+        y_vec[i] = 1/(1+math.exp(-u))
+    return y_vec
+"""
+
+def update(w,y_vec,theta=0.5,time=100):
+    for s in range(time):
+        m = len(y_vec)
+        i = random.randint(0,m-1)
+        u = np.dot(w[i][:],y_vec) - theta
+        if u <= -1:
+            y_vec[i] = -1
+        elif u < 1:
+            y_vec[i] = u
+        else:
+            y_vec[i] = 1
+    return y_vec
+
+
 
 
 #The following is training pipeline
 #Initial setting
-def hopfield(train_files, test_files,theta=0.5, time=1000, size=(100,100),threshold=60, current_path=None,weight=False):
+def hopfield(train_files, test_files,theta=0.5, time=0, size=(100,100),threshold=60, current_path=None,weight=False):
 
     #read image and convert it to Numpy array
     print "Importing images and creating weight matrix...."
@@ -152,4 +181,4 @@ for i in os.listdir(path):
         test_paths.append(path+i)
 
 #Hopfield network starts!
-hopfield(train_files=train_paths, test_files=test_paths, theta=0.9,time=100,size=(5,7),threshold=60, current_path = current_path,weight=False)
+hopfield(train_files=train_paths, test_files=test_paths, theta=0.9,time=15000,size=(5,7),threshold=60, current_path = current_path,weight=False)
